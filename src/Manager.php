@@ -280,7 +280,7 @@ class Manager
                         if ($vendor) {
                             $path        = $basePath . '/' . $group;
                             $locale_path = Str::after($group, '/');
-                        } else if($this->getConfig('skip_vendor_folder') && str_contains($group, '::')) {
+                        } else if($this->getConfig('use_old_vendor_grouping') && str_contains($group, '::')) {
                             $path = $basePath . '/vendor/'. strstr($group, '::', true);
                             $locale_path = Str::after($group, '/');
                         }
@@ -293,16 +293,21 @@ class Manager
 
                             $temp_path = rtrim($path . DIRECTORY_SEPARATOR . $subfolder_level, DIRECTORY_SEPARATOR);
                             if (!is_dir($temp_path)) {
-                                mkdir($temp_path, 0777, true);
+                                $this->files->makeDirectory($temp_path, 0777, true);
                             }
                         }
 
-                        $path = $path . DIRECTORY_SEPARATOR . $locale . DIRECTORY_SEPARATOR;
+                        $path .= DIRECTORY_SEPARATOR . $locale . DIRECTORY_SEPARATOR;
 
-                        if($this->getConfig('skip_vendor_folder')) {
+                        if($this->getConfig('use_old_vendor_grouping')) {
                             $path .= substr(strstr(basename($group), '::') . '.php', 2);
                         } else {
                             $path .= basename($group) . '.php';
+                        }
+
+                        //Create folder if missing
+                        if(!$this->files->exists(dirname($path))) {
+                            $this->files->makeDirectory(dirname($path), 0777, true);
                         }
 
                         $output = "<?php\n\nreturn " . var_export($translations, true) . ';' . \PHP_EOL;
