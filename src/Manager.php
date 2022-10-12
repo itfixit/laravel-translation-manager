@@ -97,8 +97,7 @@ class Manager
                     $translations = \Lang::getLoader()->load($locale, $group);
                 } else {
                     $translations = include $file;
-                    $group        = ($this->getConfig('skip_vendor_folder') ? '' : 'vendor' . '/') .
-                        $vendorName . '::' . $group;
+                    $group        = ($this->getConfig('skip_vendor_folder') ? '' : 'vendor' . '/') . $vendorName . '::' . $group;
                 }
 
                 if ($translations && is_array($translations)) {
@@ -283,6 +282,7 @@ class Manager
                         } else if($this->getConfig('use_old_vendor_grouping') && str_contains($group, '::')) {
                             $path = $basePath . '/vendor/'. strstr($group, '::', true);
                             $locale_path = Str::after($group, '/');
+                            $isVendor = true;
                         }
                         $subfolders = explode(DIRECTORY_SEPARATOR, $locale_path);
                         array_pop($subfolders);
@@ -299,7 +299,7 @@ class Manager
 
                         $path .= DIRECTORY_SEPARATOR . $locale . DIRECTORY_SEPARATOR;
 
-                        if($this->getConfig('use_old_vendor_grouping')) {
+                        if(isset($isVendor) && $this->getConfig('use_old_vendor_grouping')) {
                             $path .= substr(strstr(basename($group), '::') . '.php', 2);
                         } else {
                             $path .= basename($group) . '.php';
