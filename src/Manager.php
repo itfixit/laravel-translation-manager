@@ -299,7 +299,7 @@ class Manager
 
                         $path .= DIRECTORY_SEPARATOR . $locale . DIRECTORY_SEPARATOR;
 
-                        if(isset($vendor) && $this->getConfig('use_old_vendor_grouping')) {
+                        if($vendor && $this->getConfig('use_old_vendor_grouping')) {
                             $path .= substr(strstr(basename($group), '::') . '.php', 2);
                         } else if ($vendor) {
                             $path = $path.DIRECTORY_SEPARATOR.'messages.php';
