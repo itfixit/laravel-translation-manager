@@ -299,10 +299,12 @@ class Manager
 
                         $path .= DIRECTORY_SEPARATOR . $locale . DIRECTORY_SEPARATOR;
 
-                        if(isset($isVendor) && $this->getConfig('use_old_vendor_grouping')) {
+                        if(isset($vendor) && $this->getConfig('use_old_vendor_grouping')) {
                             $path .= substr(strstr(basename($group), '::') . '.php', 2);
+                        } else if ($vendor) {
+                            $path = $path.DIRECTORY_SEPARATOR.'messages.php';
                         } else {
-                            $path .= basename($group) . '.php';
+                            $path = $path.DIRECTORY_SEPARATOR.$locale.DIRECTORY_SEPARATOR.$group.'.php';
                         }
 
                         //Create folder if missing
@@ -357,7 +359,8 @@ class Manager
     {
         $array = [];
         foreach ($translations as $translation) {
-            if ($json) {
+            // For JSON and sentences, do not use dotted notation
+            if ($json || Str::contains($translation->key, [' ']) || Str::endsWith($translation->key, ['.'])) {
                 $this->jsonSet($array[$translation->locale][$translation->group], $translation->key,
                     $translation->value);
             } else {
