@@ -276,13 +276,13 @@ class Manager
                         $path         = $this->app['path.lang'];
 
                         $locale_path = $locale . DIRECTORY_SEPARATOR . $group;
-                        if ($vendor) {
+                        if ($vendor && !$this->getConfig('use_old_vendor_grouping')) {
                             $path        = $basePath . '/' . $group;
                             $locale_path = Str::after($group, '/');
                         } else if($this->getConfig('use_old_vendor_grouping') && str_contains($group, '::')) {
                             $path = $basePath . '/vendor/'. strstr($group, '::', true);
                             $locale_path = Str::after($group, '/');
-                            $isVendor = true;
+                            $vendor = true;
                         }
                         $subfolders = explode(DIRECTORY_SEPARATOR, $locale_path);
                         array_pop($subfolders);
