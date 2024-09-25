@@ -301,6 +301,8 @@ class Manager
 
                         if($vendor && $this->getConfig('use_old_vendor_grouping')) {
                             $path .= substr(strstr(basename($group), '::') . '.php', 2);
+                        } elseif(!$vendor && $this->getConfig('use_old_vendor_grouping')) {
+                            $path = $path.$group.'.php';
                         } else if ($vendor) {
                             $path = $path.DIRECTORY_SEPARATOR.'messages.php';
                         } else {
